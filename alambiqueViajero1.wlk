@@ -1,7 +1,37 @@
 object luke {
-    
-}
+    var vehiculo = alambiqueVeloz
 
+    method vehiculo() = vehiculo
+
+    method cambiarDeVehiculo(nuevoVehiculo) {
+        vehiculo = nuevoVehiculo
+    }
+    
+    method puedeViajar(ciudad) = ciudad.restriccion(vehiculo)
+
+    method viajar(ciudad) {
+        if (self.puedeViajar(ciudad)) {
+            vehiculo.comportamiento()
+            self.guardarRecuerdo(ciudad)
+            self.registrarViaje()
+        }
+    }
+
+    var recuerdo = bombaAtomica
+    
+    method guardarRecuerdo(ciudad) {
+        recuerdo = ciudad.recuerdo()
+    }
+    method recuerdo() = recuerdo
+
+    var lugares = 0
+
+    method registrarViaje() {
+        lugares += 1
+    }
+    method cantidadDeLugaresVisitados() = lugares
+}
+ 
 
 //Vehiculos: 
 object alambiqueVeloz {
@@ -12,39 +42,80 @@ object alambiqueVeloz {
         combustible += aumentoDeCombustible
     }
 
-    method viaje() {
-        combustible -= 10 //Revisar después si va acá (y cambia de nombre) o va en Luke. 
+    method comportamiento() {
+        combustible -= 10 
     }
 
     method esRapido() = true
 }
 
-/*
 
- */
 object superChatarraEspecial {
     var canionesPuestos = false
 
+    method canionesPuestos() = canionesPuestos
 
+    method comportamiento() {
+        canionesPuestos = !canionesPuestos 
+    }
 
+    var combustible = 80
+    method combustible() = combustible
+    method combustibleActual() {
+        if (canionesPuestos) {
+            combustible = 80
+        }else {
+            combustible = 50
+        }
+    }
     method esRapido() = false
 }
 
 object antiguallaBlindada {
-  
+    method esRapido(ciudad) = ciudad.cantidadDeGangsters() < 7
+
+    method combustible() = 50
+
+    method comportamiento() {}
 }
 
-object bagdad {
-  var recuerdo = bidonDeCrudo
 
-  method cambiarRecuerdo(nuevoRecuerdo) {
-    recuerdo = nuevoRecuerdo
-  }
-  method recuerdo() = recuerdo
+
+//Ciudades
+object bagdad {
+    var recuerdo = bidonDeCrudo
+
+    method cambiarRecuerdo(nuevoRecuerdo) {
+        recuerdo = nuevoRecuerdo
+    }
+    method recuerdo() = recuerdo
+
+    method restriccion(vehiculo) = true
+
+    var gangster = 5
+    method cantidadDeGangsters() = gangster
+    method cambiarCantidadDeGangsters(nuevaCantidad) {
+           gangster = nuevaCantidad.max(1)
+    }
 }
 
 object buenosAires {
-  method recuerdo() = mateConYerba || mateSinYerba // Depende del presidente
+    var recuerdo = mateConYerba
+    method recuerdo() = recuerdo
+    method puebloEligePresidenteBueno() {
+        recuerdo = mateConYerba
+    }
+    method puebloEligePresidenteMalo() {
+        recuerdo = mateSinYerba
+    }
+    
+    method restriccion(vehiculo) = vehiculo.esRapido()
+
+    var gangster = 5
+    method cantidadDeGangsters() = gangster
+    method cambiarCantidadDeGangsters(nuevaCantidad) {
+        gangster = nuevaCantidad.max(1)
+    }
 }
 
 object lasVegas {
@@ -54,19 +125,30 @@ object lasVegas {
         homenaje = nuevaCiudad
     }
     method homenajea() = homenaje
-    method recuerdo() {
-        homenaje.recuerdo()
+    method recuerdo() = homenaje.recuerdo()
+    method restriccion(vehiculo) = homenaje.restriccion(vehiculo)
+
+    var gangster = 5
+
+    method cantidadDeGangsters() = gangster
+
+    method cambiarCantidadDeGangsters(nuevaCantidad) {
+        gangster = nuevaCantidad.max(1)
     }
-    method restriccion() = homenaje.restriccion()
 }
 
 object paris {
     method recuerdo() = llaveroTorreEiffel
-    method restriccion() { 
-        vehiculo().combustible() >= 10
+    method restriccion(vehiculo) = vehiculo.combustible() >= 10
+
+    var gangster = 5
+
+    method cantidadDeGangsters() = gangster
+
+    method cambiarCantidadDeGangsters(nuevaCantidad) {
+        gangster = nuevaCantidad.max(1)
     }
 }
-
 
 
 //Recuerdos
